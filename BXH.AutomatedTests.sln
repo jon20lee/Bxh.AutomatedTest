@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2047
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BXH.AutomatedTests", "BXH.AutomatedTests\BXH.AutomatedTests.csproj", "{8612DEA6-1BDF-478D-924B-0A3592398690}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BXH.AutomatedTests.Test", "BXH.AutomatedTests.Test\BXH.AutomatedTests.Test.csproj", "{5509163D-3BB7-4291-B556-6363ED9A33A5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8612DEA6-1BDF-478D-924B-0A3592398690}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8612DEA6-1BDF-478D-924B-0A3592398690}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8612DEA6-1BDF-478D-924B-0A3592398690}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8612DEA6-1BDF-478D-924B-0A3592398690}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5509163D-3BB7-4291-B556-6363ED9A33A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5509163D-3BB7-4291-B556-6363ED9A33A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5509163D-3BB7-4291-B556-6363ED9A33A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5509163D-3BB7-4291-B556-6363ED9A33A5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7BE64447-C93F-49F9-82F9-176545FA80E8}
+	EndGlobalSection
+EndGlobal
