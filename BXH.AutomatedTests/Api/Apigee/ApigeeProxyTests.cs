@@ -1,103 +1,35 @@
-﻿
-
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Xml;
-using BXH.AutomatedTests.Api.Apigee.Data;
-using BXH.AutomatedTests.Api.Apigee.Models;
-using BXH.AutomatedTests.Configs;
-using Newtonsoft.Json.Linq;
+using BXH.AutomatedTests.Api.Models;
 using RestSharp;
-using SimpleJson;
+using Serilog.Core;
 
 namespace BXH.AutomatedTests.Api.Apigee
 {
     public class ApigeeProxyTests
     {
-        public string token;
-        public ApigeeConfig apigeeConfigs;
-        public List<TestTarget> testTargets;
-        public RestClient client;
-        public List<IRestResponse> responses;
 
-        public ApigeeProxyTests()
+        private TestHelper testHelper;
+        private Logger _logger;
+
+        public ApigeeProxyTests(TestHelper conf)
         {
-            //read in config settings
-            string configFile = File.ReadAllText(Path.Combine("C:\\BXH", "AutomatedTestConfig.json"));
-            dynamic envToTest = JObject.Parse(configFile).SelectToken($"EnvironmentToTest");
-            responses = new List<IRestResponse>();
-
-            //grab the configs and targets to be run
-            apigeeConfigs = JObject.Parse(configFile).SelectToken($"Apps.Apigee.Environments[0].{envToTest.Value}").ToObject<ApigeeConfig>();
-            testTargets = JObject.Parse(configFile).SelectToken($"Apps.Apigee.Targets").ToObject<List<TestTarget>>();
-
-            client = new RestClient(apigeeConfigs.HostURL);
-        }
-
-        public List<IRestResponse> RunTests(string testName)
-        {
-            IEnumerable<TestTarget> testsToRun = testTargets.Any(x => x.Name == testName) ? (IEnumerable<TestTarget>)testTargets.Where(x => x.Name == testName) : testTargets;
-
-            foreach (var test in testsToRun)
-            {
-                var request = GetTargetRestRequest(test);
-                var res = client.Execute(request);
-                responses.Add((res));
-            }
-
-            return responses;
-        }
-
-        public RestRequest GetTargetRestRequest(TestTarget test)
-        {
-            //get token for test...
-            ApigeeProductApp tokenConfigs = apigeeConfigs.ProductApps.FirstOrDefault(x => x.ID == test.ProductAppID);
-            var token = ApigeeToken(tokenConfigs.ClientID, tokenConfigs.ClientSecret);
-
-            //setup request
-            var request = new RestRequest(test.TargetURL, (Method)Enum.Parse(typeof(Method), test.HTTPVerb));
-
-            //add headers
-            foreach (var header in test.Headers)
-            {
-                if (header.key == "api-key")
-                {
-                    request.AddHeader(header.key, tokenConfigs.ClientID);
-                }
-                else if (header.key == "Authorization")
-                {
-                    request.AddHeader(header.key, header.value + " " + token);
-                }
-                else
-                {
-                    request.AddHeader(header.key, header.value);
-                }
-            }
-
-            //add params
-            foreach (var param in test.Parameters)
-            {
-                request.AddParameter(param.key, param.value, (ParameterType)Enum.Parse(typeof(ParameterType), param.type));
-            }
-
-            return request;
+            testHelper = conf;
+            _logger = conf.Logger;
         }
 
         public string ApigeeToken(string clientId, string clientSecret)
         {
-
-            var request = new RestRequest(Dev.APIGEE_RESOURCE_TOKEN, Method.POST);
+            var request = new RestRequest("/oauth/client_credential/accesstoken", Method.POST);
             request.AddQueryParameter("grant_type", "client_credentials");
             request.AddParameter(
                 "application/x-www-form-urlencoded",
                 $"client_id={clientId}&client_secret={clientSecret}",
                 ParameterType.RequestBody);
 
-            var tokenResponse = client.Execute<ApigeeTokenResponse>(request);
+            var tokenResponse = testHelper.Client.Execute<ApigeeTokenResponse>(request);
 
             if (tokenResponse.StatusCode == HttpStatusCode.OK)
             {
@@ -109,27 +41,26 @@ namespace BXH.AutomatedTests.Api.Apigee
 
         public string ShipNotices()
         {
+            var res = testHelper.RunTests("AdvancedShipNotice", ApigeeToken(testHelper.configs.ProductApps.FirstOrDefault().ClientID, testHelper.configs.ProductApps.FirstOrDefault().ClientSecret));
 
-            var res =  RunTests("AdvancedShipNotice");
-
-            if (res?.FirstOrDefault()?.StatusCode == HttpStatusCode.OK)
+            if (res?.FirstOrDefault()?.Response.StatusCode == HttpStatusCode.OK)
             {
-                return $"SHIP NOTICE SUCCESS: Status: {res?.FirstOrDefault()?.StatusCode}";
+                return $"SHIP NOTICE SUCCESS: Status: {res?.FirstOrDefault()?.Response.StatusCode}";
             }
 
-            return $"SHIP NOTICE endpoint failed: {res?.FirstOrDefault()?.StatusCode} : {res?.FirstOrDefault()?.ErrorMessage}";
+            return $"SHIP NOTICE endpoint failed: {res?.FirstOrDefault()?.Response.StatusCode} : {res?.FirstOrDefault()?.Response.ErrorMessage}";
         }
 
         public string BulkShipStatus()
         {
-            var res = RunTests("BulkShipStatus");
+            var res = testHelper.RunTests("BulkShipStatus", ApigeeToken(testHelper.configs.ProductApps.FirstOrDefault().ClientID, testHelper.configs.ProductApps.FirstOrDefault().ClientSecret));
 
-            if (res?.FirstOrDefault()?.StatusCode == HttpStatusCode.OK)
+            if (res?.FirstOrDefault()?.Response.StatusCode == HttpStatusCode.OK)
             {
-                return $"BULK SHIP NOTICE SUCCESS: Status: {res?.FirstOrDefault()?.StatusCode}";
+                return $"BULK SHIP NOTICE SUCCESS: Status: {res?.FirstOrDefault()?.Response.StatusCode}";
             }
 
-            return $"BULK SHIP NOTICE endpoint failed: {res?.FirstOrDefault()?.StatusCode} : {res?.FirstOrDefault()?.ErrorMessage}";
+            return $"BULK SHIP NOTICE endpoint failed: {res?.FirstOrDefault()?.Response.StatusCode} : {res?.FirstOrDefault()?.Response.ErrorMessage}";
         }
     }
 }
