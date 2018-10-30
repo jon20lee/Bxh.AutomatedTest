@@ -11,7 +11,7 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
     public class ApigeeTests
     {
         private static readonly TestHelper TestConfigs = new TestHelper("Apigee");
-        private readonly ApigeeProxyTests _apigeeTests = new ApigeeProxyTests(TestConfigs);
+        private readonly ApigeeApiTests _apigeeTests = new ApigeeApiTests(TestConfigs);
 
         [Test]
         public void PostAdvancedShipReturnsOk()

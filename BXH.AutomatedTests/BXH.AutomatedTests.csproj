@@ -55,7 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\Apigee\ApigeeProxyTests.cs" />
+    <Compile Include="Api\Apigee\ApigeeApiTests.cs" />
     <Compile Include="Api\Bxh\BxhApiTests.cs" />
     <Compile Include="Api\Models\EnvironmentConfig.cs" />
     <Compile Include="Api\Models\ProductApp.cs" />

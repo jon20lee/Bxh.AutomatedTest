@@ -8,13 +8,13 @@ using Serilog.Core;
 
 namespace BXH.AutomatedTests.Api.Apigee
 {
-    public class ApigeeProxyTests
+    public class ApigeeApiTests
     {
 
         private TestHelper testHelper;
         private Logger _logger;
 
-        public ApigeeProxyTests(TestHelper conf)
+        public ApigeeApiTests(TestHelper conf)
         {
             testHelper = conf;
             _logger = conf.Logger;
