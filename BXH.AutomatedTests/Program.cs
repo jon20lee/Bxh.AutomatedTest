@@ -17,7 +17,7 @@ namespace BXH.AutomatedTests
         static void Main(string[] args)
         {
             TestHelper TestHelpers = new TestHelper("Apigee");
-            ApigeeProxyTests _apigeeTests = new ApigeeProxyTests(TestHelpers);
+            ApigeeApiTests _apigeeTests = new ApigeeApiTests(TestHelpers);
 
             foreach (var test in TestHelpers.TestTargets)
             {

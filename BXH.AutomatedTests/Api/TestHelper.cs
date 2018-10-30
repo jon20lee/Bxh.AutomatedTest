@@ -27,7 +27,7 @@ namespace BXH.AutomatedTests.Api
                 .WriteTo.Console()
                 .CreateLogger();
 
-            Logger.Information($"Test Runner started...");
+            Logger.Information($"--------------------- {appName} ------------------------");
             TestResults = new List<TestResult>();
             AppName = appName;
 
