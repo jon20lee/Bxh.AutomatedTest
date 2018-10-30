@@ -1,6 +1,6 @@
-﻿namespace BXH.AutomatedTests.Api.Apigee.Models
+﻿namespace BXH.AutomatedTests.Api.Models
 {
-    public class ApigeeProductApp
+    public class ProductApp
     {
         public int ID { get; set; }
         public string Name { get; set; }

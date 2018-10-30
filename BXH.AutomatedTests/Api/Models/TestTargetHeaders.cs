@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BXH.AutomatedTests.Api.Apigee.Models
+namespace BXH.AutomatedTests.Api.Models
 {
     public class TestTargetHeaders
     {
