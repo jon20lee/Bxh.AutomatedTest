@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp, Version=106.5.4.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.106.5.4\lib\net452\RestSharp.dll</HintPath>
     </Reference>
@@ -47,10 +50,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\Apigee\ApigeeProxyTests.cs" />
-    <Compile Include="Api\Apigee\Models\ApigeeTokenCredentials.cs" />
+    <Compile Include="Api\Apigee\Models\ApigeeConfig.cs" />
+    <Compile Include="Api\Apigee\Models\ApigeeProductApp.cs" />
     <Compile Include="Api\Apigee\Models\ApigeeTokenResponse.cs" />
     <Compile Include="Api\Apigee\Data\NoticeData.cs" />
+    <Compile Include="Api\Apigee\Models\TestTarget.cs" />
+    <Compile Include="Api\Apigee\Models\TestTargetHeaders.cs" />
+    <Compile Include="Api\Apigee\Models\TestTargetParameters.cs" />
     <Compile Include="Configs\Dev.cs" />
+    <Compile Include="Configs\Enums.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
