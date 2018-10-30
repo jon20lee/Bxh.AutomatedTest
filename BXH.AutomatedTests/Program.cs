@@ -3,23 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BXH.AutomatedTests.Api;
 using BXH.AutomatedTests.Api.Apigee;
+using BXH.AutomatedTests.Configs;
+using Serilog;
+using Serilog.Core;
 
 namespace BXH.AutomatedTests
 {
     class Program
     {
+
         static void Main(string[] args)
         {
+            TestHelper TestHelpers = new TestHelper("Apigee");
+            ApigeeApiTests _apigeeTests = new ApigeeApiTests(TestHelpers);
 
-            ApigeeProxyTests apigeeTests = new ApigeeProxyTests();
+            foreach (var test in TestHelpers.TestTargets)
+            {
+                var appconfig = TestHelpers.configs.ProductApps.FirstOrDefault(x => x.ID == test.ProductAppID);
 
-            Console.WriteLine(" ---------------------  APIGEE TESTS  ----------------------------");
-            Console.WriteLine("");
-            Console.WriteLine(" ------------------------  Token  ----------------------------");
-            Console.WriteLine(apigeeTests.ApigeeToken());
-            Console.WriteLine(" ------------------------  Ship-Notice  ----------------------------");
-            Console.WriteLine(apigeeTests.ShipNotices());
+                TestHelpers.RunTest(test, _apigeeTests.ApigeeToken(appconfig.ClientID, appconfig.ClientSecret), appconfig.ClientID);
+            }
+
+            TestHelpers = new TestHelper("BXH");
+
+            foreach (var test in TestHelpers.TestTargets)
+            {
+                TestHelpers.RunTest(test, "", "");
+            }
+
             Console.ReadLine();
         }
     }
