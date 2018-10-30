@@ -41,26 +41,28 @@ namespace BXH.AutomatedTests.Api.Apigee
 
         public string ShipNotices()
         {
-            var res = testHelper.RunTests("AdvancedShipNotice", ApigeeToken(testHelper.configs.ProductApps.FirstOrDefault().ClientID, testHelper.configs.ProductApps.FirstOrDefault().ClientSecret));
-
-            if (res?.FirstOrDefault()?.Response.StatusCode == HttpStatusCode.OK)
-            {
-                return $"SHIP NOTICE SUCCESS: Status: {res?.FirstOrDefault()?.Response.StatusCode}";
-            }
-
-            return $"SHIP NOTICE endpoint failed: {res?.FirstOrDefault()?.Response.StatusCode} : {res?.FirstOrDefault()?.Response.ErrorMessage}";
+            return ExecuteApigeeTest("AdvancedShipNotice");
         }
 
         public string BulkShipStatus()
         {
-            var res = testHelper.RunTests("BulkShipStatus", ApigeeToken(testHelper.configs.ProductApps.FirstOrDefault().ClientID, testHelper.configs.ProductApps.FirstOrDefault().ClientSecret));
+            return ExecuteApigeeTest("BulkShipStatus");
+        }
 
-            if (res?.FirstOrDefault()?.Response.StatusCode == HttpStatusCode.OK)
+        public string ExecuteApigeeTest(string testName)
+        {
+
+            TestTarget testsToRun = (TestTarget)testHelper.TestTargets.FirstOrDefault(x => x.Name == testName);
+            ProductApp apigeeApp = (ProductApp)testHelper.configs.ProductApps.FirstOrDefault(x => x.ID == testsToRun.ProductAppID);
+
+            var res = testHelper.RunTest(testsToRun, ApigeeToken(apigeeApp.ClientID, apigeeApp.ClientSecret), apigeeApp.ClientID);
+
+            if (res?.Response.StatusCode == HttpStatusCode.OK)
             {
-                return $"BULK SHIP NOTICE SUCCESS: Status: {res?.FirstOrDefault()?.Response.StatusCode}";
+                return $"SUCCESS: Status: {res?.Response.StatusCode}";
             }
 
-            return $"BULK SHIP NOTICE endpoint failed: {res?.FirstOrDefault()?.Response.StatusCode} : {res?.FirstOrDefault()?.Response.ErrorMessage}";
+            return $"FAILURE: {res?.Response.StatusCode} : {res?.Response.ErrorMessage}";
         }
     }
 }

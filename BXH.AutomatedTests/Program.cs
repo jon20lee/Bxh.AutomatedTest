@@ -13,16 +13,24 @@ namespace BXH.AutomatedTests
 {
     class Program
     {
-        private static readonly TestHelper TestHelpers = new TestHelper("Apigee");
-        private static readonly ApigeeProxyTests _apigeeTests = new ApigeeProxyTests(TestHelpers);
 
         static void Main(string[] args)
         {
+            TestHelper TestHelpers = new TestHelper("Apigee");
+            ApigeeProxyTests _apigeeTests = new ApigeeProxyTests(TestHelpers);
+
             foreach (var test in TestHelpers.TestTargets)
             {
                 var appconfig = TestHelpers.configs.ProductApps.FirstOrDefault(x => x.ID == test.ProductAppID);
 
-                TestHelpers.RunTests(test.Name, _apigeeTests.ApigeeToken(appconfig.ClientID, appconfig.ClientSecret));
+                TestHelpers.RunTest(test, _apigeeTests.ApigeeToken(appconfig.ClientID, appconfig.ClientSecret), appconfig.ClientID);
+            }
+
+            TestHelpers = new TestHelper("BXH");
+
+            foreach (var test in TestHelpers.TestTargets)
+            {
+                TestHelpers.RunTest(test, "", "");
             }
 
             Console.ReadLine();

@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\Apigee\ApigeeProxyTests.cs" />
+    <Compile Include="Api\Bxh\BxhApiTests.cs" />
     <Compile Include="Api\Models\EnvironmentConfig.cs" />
     <Compile Include="Api\Models\ProductApp.cs" />
     <Compile Include="Api\Apigee\Models\ApigeeTokenResponse.cs" />
@@ -74,7 +75,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Api\Apigee\Data\" />
-    <Folder Include="Api\Bxh\" />
     <Folder Include="Api\Core-Services\" />
     <Folder Include="Api\Inner\" />
   </ItemGroup>
