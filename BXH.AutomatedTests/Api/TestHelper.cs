@@ -42,34 +42,27 @@ namespace BXH.AutomatedTests.Api
             Client = new RestClient(configs.HostURL);
         }
 
-        public List<TestResult> RunTests(string testName, string token)
+        public TestResult RunTest(TestTarget test, string token, string clientID)
         {
-            IEnumerable<TestTarget> testsToRun = TestTargets.Any(x => x.Name == testName) ? (IEnumerable<TestTarget>)TestTargets.Where(x => x.Name == testName) : TestTargets;
 
-            foreach (var test in testsToRun)
-            {
-                TestResult testResult = new TestResult();
+            TestResult testResult = new TestResult();
 
-                var request = GetTargetRestRequest(test, token);
-                var res = Client.Execute(request);
-                testResult.Response = res;
-                testResult.TestName = test.Name;
-                TestResults.Add((testResult));
+            var request = GetTargetRestRequest(test, token, clientID);
+            var res = Client.Execute(request);
+            testResult.Response = res;
+            testResult.TestName = test.Name;
 
-                Logger.Information($"------------------------------------------------------");
-                Logger.Information($"Test Name: {testResult.TestName} ");
-                Logger.Information($"Test status code: {testResult.Response.StatusCode} ");
-                var finalTestResult = testResult.Response.StatusCode == HttpStatusCode.OK ? "PASSED" : "FAILED";
-                Logger.Information($"Test Result: {finalTestResult}");
-            }
-
-            return TestResults;
+            Logger.Information($"------------------------------------------------------");
+            Logger.Information($"Test Name: {testResult.TestName} ");
+            Logger.Information($"Test status code: {testResult.Response.StatusCode} ");
+            var finalTestResult = testResult.Response.StatusCode == HttpStatusCode.OK ? "PASSED" : "FAILED";
+            Logger.Information($"Test Result: {finalTestResult}");
+        
+            return testResult;
         }
 
-        public RestRequest GetTargetRestRequest(TestTarget test, string token)
+        public RestRequest GetTargetRestRequest(TestTarget test, string token, string clientId)
         {
-            //get token for test...
-            ProductApp tokenConfigs = configs.ProductApps.FirstOrDefault(x => x.ID == test.ProductAppID);
 
             //setup request
             var request = new RestRequest(test.TargetURL, (Method)Enum.Parse(typeof(Method), test.HTTPVerb));
@@ -79,11 +72,15 @@ namespace BXH.AutomatedTests.Api
             {
                 if (header.key == "api-key")   //only used for apigee for now...
                 {
-                    request.AddHeader(header.key, tokenConfigs.ClientID);
+                    request.AddHeader(header.key, clientId);
                 }
                 else if (header.key == "Authorization" && header.value == "Bearer")
                 {
                     request.AddHeader(header.key, header.value + " " + token);
+                }
+                else if (header.key == "x-api-key")
+                {
+                    request.AddHeader(header.key, header.value);
                 }
                 else
                 {

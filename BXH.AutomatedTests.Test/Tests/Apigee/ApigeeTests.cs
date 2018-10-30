@@ -5,13 +5,13 @@ using BXH.AutomatedTests.Api.Apigee;
 using BXH.AutomatedTests.Configs;
 using NUnit.Framework;
 
-namespace BXH.AutomatedTests.Test
+namespace BXH.AutomatedTests.Test.Tests.Apigee
 {
     [TestFixture]
     public class ApigeeTests
     {
-        private static readonly TestHelper ApigeeTestConfigs = new TestHelper("Apigee");
-        private readonly ApigeeProxyTests _apigeeTests = new ApigeeProxyTests(ApigeeTestConfigs);
+        private static readonly TestHelper TestConfigs = new TestHelper("Apigee");
+        private readonly ApigeeProxyTests _apigeeTests = new ApigeeProxyTests(TestConfigs);
 
         [Test]
         public void PostAdvancedShipReturnsOk()
