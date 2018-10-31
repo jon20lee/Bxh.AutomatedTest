@@ -30,5 +30,14 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
         }
+
+        [Test]
+        public void PostBlendingsReturnsOk()
+        {
+            var result = _apigeeTests.PostBlendings();
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
     }
 }

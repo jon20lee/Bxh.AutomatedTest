@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using BXH.AutomatedTests.Api;
 using BXH.AutomatedTests.Api.Apigee;
+using BXH.AutomatedTests.Api.Inner;
+using BXH.AutomatedTests.Api.Models;
 using BXH.AutomatedTests.Configs;
 using Serilog;
 using Serilog.Core;
@@ -31,6 +33,24 @@ namespace BXH.AutomatedTests
             foreach (var test in TestHelpers.TestTargets)
             {
                 TestHelpers.RunTest(test, "", "");
+            }
+
+            TestHelpers = new TestHelper("CORE");
+
+            foreach (var test in TestHelpers.TestTargets)
+            {
+                TestHelpers.RunTest(test, "", "");
+            }
+
+            
+            TestHelpers = new TestHelper("INNER");
+            InnerApiTests _innerTests = new InnerApiTests(TestHelpers);
+
+            foreach (var test in TestHelpers.TestTargets)
+            {
+                TestTargetCredentials innerCreds = (TestTargetCredentials)TestHelpers.configs.credentials;
+
+                TestHelpers.RunTest(test, _innerTests.InnerToken(innerCreds.username, innerCreds.password), "");
             }
 
             Console.ReadLine();

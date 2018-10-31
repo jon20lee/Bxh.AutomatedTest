@@ -57,11 +57,15 @@
   <ItemGroup>
     <Compile Include="Api\Apigee\ApigeeApiTests.cs" />
     <Compile Include="Api\Bxh\BxhApiTests.cs" />
+    <Compile Include="Api\Core-Services\CoreApiTests.cs" />
+    <Compile Include="Api\Inner\InnerApiTests.cs" />
+    <Compile Include="Api\Inner\Models\InnerTokenResponse.cs" />
     <Compile Include="Api\Models\EnvironmentConfig.cs" />
     <Compile Include="Api\Models\ProductApp.cs" />
     <Compile Include="Api\Apigee\Models\ApigeeTokenResponse.cs" />
     <Compile Include="Api\Models\TestResult.cs" />
     <Compile Include="Api\Models\TestTarget.cs" />
+    <Compile Include="Api\Models\TestTargetCredentials.cs" />
     <Compile Include="Api\Models\TestTargetHeaders.cs" />
     <Compile Include="Api\Models\TestTargetParameters.cs" />
     <Compile Include="Api\TestHelper.cs" />
@@ -75,8 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Api\Apigee\Data\" />
-    <Folder Include="Api\Core-Services\" />
-    <Folder Include="Api\Inner\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

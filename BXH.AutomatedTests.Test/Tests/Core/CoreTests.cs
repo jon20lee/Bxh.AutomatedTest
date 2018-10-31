@@ -1,19 +1,18 @@
 ﻿using BXH.AutomatedTests.Api;
-using BXH.AutomatedTests.Api.Bxh;
 using NUnit.Framework;
 
-namespace BXH.AutomatedTests.Test.Tests.Bxh
+namespace BXH.AutomatedTests.Test.Tests.Core
 {
     [TestFixture]
-    public class BxhTests
+    public class CoreTests
     {
-        private static readonly TestHelper TestConfigs = new TestHelper("BXH");
-        private readonly BxhApiTests _bxhTests = new BxhApiTests(TestConfigs);
+        private static readonly TestHelper TestConfigs = new TestHelper("CORE");
+        private readonly CoreApiTests _coreTests = new CoreApiTests(TestConfigs);
 
         [Test]
         public void PostAdvancedShipReturnsOk()
         {
-            var result = _bxhTests.ShipNotices();
+            var result = _coreTests.ShipNotices();
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -22,7 +21,7 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
         [Test]
         public void PostBulkShipReturnsOk()
         {
-            var result = _bxhTests.BulkShipStatus();
+            var result = _coreTests.BulkShipStatus();
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -31,10 +30,12 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
         [Test]
         public void PostBlendingReturnsOk()
         {
-            var result = _bxhTests.PostBlending();
+            var result = _coreTests.PostBlending();
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
         }
+
+
     }
 }
