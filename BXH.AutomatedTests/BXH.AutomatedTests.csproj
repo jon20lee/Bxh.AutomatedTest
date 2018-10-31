@@ -68,6 +68,7 @@
     <Compile Include="Api\Models\TestTargetCredentials.cs" />
     <Compile Include="Api\Models\TestTargetHeaders.cs" />
     <Compile Include="Api\Models\TestTargetParameters.cs" />
+    <Compile Include="Api\Models\TestTargetTestCases.cs" />
     <Compile Include="Api\TestHelper.cs" />
     <Compile Include="Configs\Enums.cs" />
     <Compile Include="Program.cs" />

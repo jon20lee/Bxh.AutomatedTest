@@ -42,12 +42,12 @@ namespace BXH.AutomatedTests.Api
             Client = new RestClient(configs.HostURL);
         }
 
-        public TestResult RunTest(TestTarget test, string token, string clientID)
+        public TestResult RunTest(TestTarget test, string testCase, string token, string clientID)
         {
 
             TestResult testResult = new TestResult();
 
-            var request = GetTargetRestRequest(test, token, clientID);
+            var request = GetTargetRestRequest(test, testCase, token, clientID);
             var res = Client.Execute(request);
             testResult.Response = res;
             testResult.TestName = test.Name;
@@ -61,7 +61,7 @@ namespace BXH.AutomatedTests.Api
             return testResult;
         }
 
-        public RestRequest GetTargetRestRequest(TestTarget test, string token, string clientId)
+        public RestRequest GetTargetRestRequest(TestTarget test, string testCase, string token, string clientId)
         {
 
             //setup request
@@ -88,8 +88,11 @@ namespace BXH.AutomatedTests.Api
                 }
             }
 
+            TestTargetTestCases tc = test.TestCases.FirstOrDefault(x => x.name == testCase);
+            IEnumerable<TestTargetParameters> parameters = test.Parameters.Where(x => x.id == tc.paramId);
+
             //add params
-            foreach (var param in test.Parameters)
+            foreach (var param in parameters)
             {
                 request.AddParameter(param.key, param.value, (ParameterType)Enum.Parse(typeof(ParameterType), param.type));
             }

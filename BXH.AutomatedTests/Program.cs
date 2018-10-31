@@ -25,21 +25,21 @@ namespace BXH.AutomatedTests
             {
                 var appconfig = TestHelpers.configs.ProductApps.FirstOrDefault(x => x.ID == test.ProductAppID);
 
-                TestHelpers.RunTest(test, _apigeeTests.ApigeeToken(appconfig.ClientID, appconfig.ClientSecret), appconfig.ClientID);
+                TestHelpers.RunTest(test, "",  _apigeeTests.ApigeeToken(appconfig.ClientID, appconfig.ClientSecret), appconfig.ClientID);
             }
 
             TestHelpers = new TestHelper("BXH");
 
             foreach (var test in TestHelpers.TestTargets)
             {
-                TestHelpers.RunTest(test, "", "");
+                TestHelpers.RunTest(test, "", "", "");
             }
 
             TestHelpers = new TestHelper("CORE");
 
             foreach (var test in TestHelpers.TestTargets)
             {
-                TestHelpers.RunTest(test, "", "");
+                TestHelpers.RunTest(test, "", "", "");
             }
 
             
@@ -50,7 +50,7 @@ namespace BXH.AutomatedTests
             {
                 TestTargetCredentials innerCreds = (TestTargetCredentials)TestHelpers.configs.credentials;
 
-                TestHelpers.RunTest(test, _innerTests.InnerToken(innerCreds.username, innerCreds.password), "");
+                TestHelpers.RunTest(test, "", _innerTests.InnerToken(innerCreds.username, innerCreds.password), "");
             }
 
             Console.ReadLine();

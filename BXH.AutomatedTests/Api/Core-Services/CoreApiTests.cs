@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using BXH.AutomatedTests.Api.Models;
 using Serilog.Core;
@@ -16,29 +17,30 @@ namespace BXH.AutomatedTests.Api
             _logger = conf.Logger;
         }
 
-        public string ShipNotices()
+        public string ShipNotices(string testCase)
         {
-            return ExecuteCoreTest("AdvancedShipNotice");
+            return ExecuteCoreTest("AdvancedShipNotice", testCase);
         }
 
-        public string BulkShipStatus()
+        public string BulkShipStatus(string testCase)
         {
-            return ExecuteCoreTest("BulkShipStatus");
+            return ExecuteCoreTest("BulkShipStatus", testCase);
         }
 
-        public string PostBlending()
+        public string PostBlending(string testCase)
         {
-            return ExecuteCoreTest("Blendings");
+            return ExecuteCoreTest("Blendings", testCase);
         }
 
-        public string ExecuteCoreTest(string testName)
+        public string ExecuteCoreTest(string testName, string testCase)
         {
 
-            TestTarget testsToRun = (TestTarget)testHelper.TestTargets.FirstOrDefault(x => x.Name == testName);
+            TestTarget testTarget = (TestTarget)testHelper.TestTargets.FirstOrDefault(x => x.Name == testName);
+            TestTargetTestCases tc = testTarget?.TestCases.FirstOrDefault(x => x.name == testCase);
 
-            var res = testHelper.RunTest(testsToRun, "", "");
+            var res = testHelper.RunTest(testTarget, testCase, "", "");
 
-            if (res?.Response.StatusCode == HttpStatusCode.OK)
+            if (res?.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()))
             {
                 return $"SUCCESS: Status: {res?.Response.StatusCode}";
             }

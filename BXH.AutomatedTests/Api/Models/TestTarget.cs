@@ -11,5 +11,6 @@ namespace BXH.AutomatedTests.Api.Models
         public string HTTPVerb { get; set; }
         public List<TestTargetHeaders> Headers { get; set; }
         public List<TestTargetParameters> Parameters { get; set; }
+        public List<TestTargetTestCases> TestCases { get; set; }
     }
 }

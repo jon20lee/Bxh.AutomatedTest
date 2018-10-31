@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using BXH.AutomatedTests.Api.Apigee;
 using BXH.AutomatedTests.Api.Inner.Models;
@@ -19,19 +20,19 @@ namespace BXH.AutomatedTests.Api.Inner
             _logger = conf.Logger;
         }
 
-        public string ShipNotices()
+        public string ShipNotices(string testCase)
         {
-            return ExecuteInnerTest("AdvancedShipNotice");
+            return ExecuteInnerTest("AdvancedShipNotice", testCase);
         }
 
-        public string BulkShipStatus()
+        public string BulkShipStatus(string testCase)
         {
-            return ExecuteInnerTest("BulkShipStatus");
+            return ExecuteInnerTest("BulkShipStatus", testCase);
         }
 
-        public string PostBlending()
+        public string PostBlending(string testCase)
         {
-            return ExecuteInnerTest("Blendings");
+            return ExecuteInnerTest("Blendings", testCase);
         }
 
 
@@ -55,16 +56,16 @@ namespace BXH.AutomatedTests.Api.Inner
             return "";
         }
 
-        public string ExecuteInnerTest(string testName)
+        public string ExecuteInnerTest(string testName, string testCase)
         {
 
-            TestTarget testsToRun = (TestTarget)testHelper.TestTargets.FirstOrDefault(x => x.Name == testName);
+            TestTarget testTarget = (TestTarget)testHelper.TestTargets.FirstOrDefault(x => x.Name == testName);
             TestTargetCredentials innerCreds = (TestTargetCredentials)testHelper.configs.credentials;
+            TestTargetTestCases tc = testTarget?.TestCases.FirstOrDefault(x => x.name == testCase);
 
+            var res = testHelper.RunTest(testTarget, testCase, InnerToken(innerCreds.username, innerCreds.password), "");
 
-            var res = testHelper.RunTest(testsToRun, InnerToken(innerCreds.username, innerCreds.password), "");
-
-            if (res?.Response.StatusCode == HttpStatusCode.OK)
+            if (res?.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()))
             {
                 return $"SUCCESS: Status: {res?.Response.StatusCode}";
             }
