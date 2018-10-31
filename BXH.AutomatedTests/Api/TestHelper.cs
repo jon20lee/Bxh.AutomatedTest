@@ -11,7 +11,7 @@ using Serilog.Core;
 
 namespace BXH.AutomatedTests.Api
 {
-    public class TestHelper
+    public class TestHelper 
     {
         public EnvironmentConfig configs;
         public List<TestTarget> TestTargets;
