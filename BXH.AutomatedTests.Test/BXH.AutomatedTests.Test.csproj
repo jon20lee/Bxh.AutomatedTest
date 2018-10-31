@@ -59,6 +59,8 @@
     <Compile Include="Tests\Apigee\ApigeeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\Bxh\BxhTests.cs" />
+    <Compile Include="Tests\Core\CoreTests.cs" />
+    <Compile Include="Tests\Inner\InnerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

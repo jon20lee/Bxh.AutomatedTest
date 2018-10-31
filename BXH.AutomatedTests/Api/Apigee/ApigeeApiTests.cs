@@ -49,6 +49,11 @@ namespace BXH.AutomatedTests.Api.Apigee
             return ExecuteApigeeTest("BulkShipStatus");
         }
 
+        public string PostBlendings()
+        {
+            return ExecuteApigeeTest("Blendings");
+        }
+
         public string ExecuteApigeeTest(string testName)
         {
 
