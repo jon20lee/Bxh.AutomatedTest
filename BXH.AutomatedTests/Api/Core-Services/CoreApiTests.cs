@@ -1,18 +1,16 @@
 ﻿using System.Linq;
 using System.Net;
-using BXH.AutomatedTests.Api.Apigee;
 using BXH.AutomatedTests.Api.Models;
-using RestSharp;
 using Serilog.Core;
 
-namespace BXH.AutomatedTests.Api.Bxh
+namespace BXH.AutomatedTests.Api
 {
-    public class BxhApiTests
+    public class CoreApiTests
     {
         private TestHelper testHelper;
         private Logger _logger;
 
-        public BxhApiTests(TestHelper conf)
+        public CoreApiTests(TestHelper conf)
         {
             testHelper = conf;
             _logger = conf.Logger;
@@ -20,25 +18,25 @@ namespace BXH.AutomatedTests.Api.Bxh
 
         public string ShipNotices()
         {
-            return ExecuteBxhTest("AdvancedShipNotice");
+            return ExecuteCoreTest("AdvancedShipNotice");
         }
 
         public string BulkShipStatus()
         {
-            return ExecuteBxhTest("BulkShipStatus");
+            return ExecuteCoreTest("BulkShipStatus");
         }
 
         public string PostBlending()
         {
-            return ExecuteBxhTest("Blendings");
+            return ExecuteCoreTest("Blendings");
         }
 
-        public string ExecuteBxhTest(string testName)
+        public string ExecuteCoreTest(string testName)
         {
 
             TestTarget testsToRun = (TestTarget)testHelper.TestTargets.FirstOrDefault(x => x.Name == testName);
 
-            var res = testHelper.RunTest(testsToRun,"", "");
+            var res = testHelper.RunTest(testsToRun, "", "");
 
             if (res?.Response.StatusCode == HttpStatusCode.OK)
             {
