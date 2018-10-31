@@ -39,30 +39,31 @@ namespace BXH.AutomatedTests.Api.Apigee
             return "";
         }
 
-        public string ShipNotices()
+        public string ShipNotices(string testCase)
         {
-            return ExecuteApigeeTest("AdvancedShipNotice");
+            return ExecuteApigeeTest("AdvancedShipNotice", testCase);
         }
 
-        public string BulkShipStatus()
+        public string BulkShipStatus(string testCase)
         {
-            return ExecuteApigeeTest("BulkShipStatus");
+            return ExecuteApigeeTest("BulkShipStatus", testCase);
         }
 
-        public string PostBlendings()
+        public string PostBlendings(string testCase)
         {
-            return ExecuteApigeeTest("Blendings");
+            return ExecuteApigeeTest("Blendings", testCase);
         }
 
-        public string ExecuteApigeeTest(string testName)
+        public string ExecuteApigeeTest(string testName, string testCase)
         {
 
-            TestTarget testsToRun = (TestTarget)testHelper.TestTargets.FirstOrDefault(x => x.Name == testName);
-            ProductApp apigeeApp = (ProductApp)testHelper.configs.ProductApps.FirstOrDefault(x => x.ID == testsToRun.ProductAppID);
+            TestTarget testTarget = (TestTarget)testHelper.TestTargets.FirstOrDefault(x => x.Name == testName);
+            ProductApp apigeeApp = (ProductApp)testHelper.configs.ProductApps.FirstOrDefault(x => x.ID == testTarget.ProductAppID);
+            TestTargetTestCases tc = testTarget?.TestCases.FirstOrDefault(x => x.name == testCase);
 
-            var res = testHelper.RunTest(testsToRun, ApigeeToken(apigeeApp.ClientID, apigeeApp.ClientSecret), apigeeApp.ClientID);
+            var res = testHelper.RunTest(testTarget, testCase, ApigeeToken(apigeeApp.ClientID, apigeeApp.ClientSecret), apigeeApp.ClientID);
 
-            if (res?.Response.StatusCode == HttpStatusCode.OK)
+            if (res?.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()))
             {
                 return $"SUCCESS: Status: {res?.Response.StatusCode}";
             }

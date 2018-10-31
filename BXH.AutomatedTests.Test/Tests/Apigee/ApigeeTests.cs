@@ -16,7 +16,7 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
         [Test]
         public void PostAdvancedShipReturnsOk()
         {
-            var result = _apigeeTests.ShipNotices();
+            var result = _apigeeTests.ShipNotices("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -25,7 +25,7 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
         [Test]
         public void PostBulkShipStatusReturnsOk()
         {
-            var result = _apigeeTests.BulkShipStatus();
+            var result = _apigeeTests.BulkShipStatus("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -34,7 +34,7 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
         [Test]
         public void PostBlendingsReturnsOk()
         {
-            var result = _apigeeTests.PostBlendings();
+            var result = _apigeeTests.PostBlendings("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);

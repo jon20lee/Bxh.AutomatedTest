@@ -13,7 +13,7 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
         [Test]
         public void PostAdvancedShipReturnsOk()
         {
-            var result = _bxhTests.ShipNotices();
+            var result = _bxhTests.ShipNotices("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -22,7 +22,7 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
         [Test]
         public void PostBulkShipReturnsOk()
         {
-            var result = _bxhTests.BulkShipStatus();
+            var result = _bxhTests.BulkShipStatus("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -31,7 +31,7 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
         [Test]
         public void PostBlendingReturnsOk()
         {
-            var result = _bxhTests.PostBlending();
+            var result = _bxhTests.PostBlending("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
