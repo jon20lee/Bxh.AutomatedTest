@@ -63,6 +63,7 @@
     <Compile Include="Api\Models\EnvironmentConfig.cs" />
     <Compile Include="Api\Models\ProductApp.cs" />
     <Compile Include="Api\Apigee\Models\ApigeeTokenResponse.cs" />
+    <Compile Include="Api\Models\TestApplication.cs" />
     <Compile Include="Api\Models\TestResult.cs" />
     <Compile Include="Api\Models\TestTarget.cs" />
     <Compile Include="Api\Models\TestTargetCredentials.cs" />

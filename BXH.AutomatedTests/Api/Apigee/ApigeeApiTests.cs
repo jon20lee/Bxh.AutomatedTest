@@ -11,13 +11,17 @@ namespace BXH.AutomatedTests.Api.Apigee
     public class ApigeeApiTests
     {
 
-        private TestHelper testHelper;
+        public TestHelper testHelper;
+        public TestApplication testApplication;
         private Logger _logger;
+        public bool useInvalidToken = false;
+        public bool useInvalidApiKey = false;
 
         public ApigeeApiTests(TestHelper conf)
         {
             testHelper = conf;
             _logger = conf.Logger;
+            testApplication = testHelper.GetTestApplication("Apigee");
         }
 
         public string ApigeeToken(string clientId, string clientSecret)
@@ -29,7 +33,7 @@ namespace BXH.AutomatedTests.Api.Apigee
                 $"client_id={clientId}&client_secret={clientSecret}",
                 ParameterType.RequestBody);
 
-            var tokenResponse = testHelper.Client.Execute<ApigeeTokenResponse>(request);
+            var tokenResponse = testApplication.Client.Execute<ApigeeTokenResponse>(request);
 
             if (tokenResponse.StatusCode == HttpStatusCode.OK)
             {
@@ -56,12 +60,11 @@ namespace BXH.AutomatedTests.Api.Apigee
 
         public string ExecuteApigeeTest(string testName, string testCase)
         {
-
-            TestTarget testTarget = (TestTarget)testHelper.TestTargets.FirstOrDefault(x => x.Name == testName);
-            ProductApp apigeeApp = (ProductApp)testHelper.configs.ProductApps.FirstOrDefault(x => x.ID == testTarget.ProductAppID);
+            TestTarget testTarget = (TestTarget)testApplication.Targets.FirstOrDefault(x => x.Name == testName);
+            ProductApp apigeeApp = (ProductApp)testApplication.Environments[0].ProductApps.FirstOrDefault(x => x.ID == testTarget?.ProductAppID);
             TestTargetTestCases tc = testTarget?.TestCases.FirstOrDefault(x => x.name == testCase);
 
-            var res = testHelper.RunTest(testTarget, testCase, ApigeeToken(apigeeApp.ClientID, apigeeApp.ClientSecret), apigeeApp.ClientID);
+            var res = testHelper.RunTest(testTarget, testApplication.Client, testCase, useInvalidToken ? "" : ApigeeToken(apigeeApp?.ClientID, apigeeApp?.ClientSecret), useInvalidApiKey ? "" : apigeeApp?.ClientID);
 
             if (res?.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()))
             {

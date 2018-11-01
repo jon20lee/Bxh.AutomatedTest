@@ -7,7 +7,7 @@ namespace BXH.AutomatedTests.Test.Tests.Inner
     [TestFixture]
     public class InnerTests
     {
-        private static readonly TestHelper TestConfigs = new TestHelper("INNER");
+        private static readonly TestHelper TestConfigs = new TestHelper();
         private readonly InnerApiTests _innerTests = new InnerApiTests(TestConfigs);
 
         [Test]
