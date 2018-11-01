@@ -7,8 +7,19 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
     [TestFixture]
     public class BxhTests
     {
-        private static readonly TestHelper TestConfigs = new TestHelper("BXH");
+        private static readonly TestHelper TestConfigs = new TestHelper();
         private readonly BxhApiTests _bxhTests = new BxhApiTests(TestConfigs);
+
+        [Test]
+        public void PostReturnsForbiddenWithInvalidApiKey()
+        {
+            _bxhTests.useInvalidApiKey = true;
+            var result = _bxhTests.ShipNotices("InvalidApiKey");
+            _bxhTests.useInvalidApiKey = false;
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
 
         [Test]
         public void PostAdvancedShipReturnsOk()

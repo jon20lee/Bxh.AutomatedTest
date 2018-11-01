@@ -6,7 +6,7 @@ namespace BXH.AutomatedTests.Test.Tests.Core
     [TestFixture]
     public class CoreTests
     {
-        private static readonly TestHelper TestConfigs = new TestHelper("CORE");
+        private static readonly TestHelper TestConfigs = new TestHelper();
         private readonly CoreApiTests _coreTests = new CoreApiTests(TestConfigs);
 
         [Test]

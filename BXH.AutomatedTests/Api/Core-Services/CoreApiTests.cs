@@ -8,13 +8,16 @@ namespace BXH.AutomatedTests.Api
 {
     public class CoreApiTests
     {
-        private TestHelper testHelper;
-        private Logger _logger;
+        public readonly TestHelper _testHelper;
+        public Logger _logger;
+        public readonly TestApplication _testApplication;
+        public bool useInvalidApiKey;
 
         public CoreApiTests(TestHelper conf)
         {
-            testHelper = conf;
+            _testHelper = conf;
             _logger = conf.Logger;
+            _testApplication = _testHelper.GetTestApplication("CORE");
         }
 
         public string ShipNotices(string testCase)
@@ -35,10 +38,10 @@ namespace BXH.AutomatedTests.Api
         public string ExecuteCoreTest(string testName, string testCase)
         {
 
-            TestTarget testTarget = (TestTarget)testHelper.TestTargets.FirstOrDefault(x => x.Name == testName);
+            TestTarget testTarget = (TestTarget)_testApplication.Targets.FirstOrDefault(x => x.Name == testName);
             TestTargetTestCases tc = testTarget?.TestCases.FirstOrDefault(x => x.name == testCase);
 
-            var res = testHelper.RunTest(testTarget, testCase, "", "");
+            var res = _testHelper.RunTest(testTarget, _testApplication.Client, testCase, useInvalidApiKey ? "" : testTarget.Headers.FirstOrDefault(x => x.key == "x-api-key").value, "");
 
             if (res?.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()))
             {
