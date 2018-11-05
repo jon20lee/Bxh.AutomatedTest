@@ -76,8 +76,11 @@ namespace BXH.AutomatedTests.Api
                     request.AddHeader(header.key, header.value);
                 }
             }
-
-            IEnumerable<TestTargetParameters> parameters = test.Parameters.Where(x => x.id == testCase.paramId);
+            List<TestTargetParameters> parameters = new List<TestTargetParameters>();
+            testCase.paramId.ForEach(x =>
+            {
+                parameters.Add(test.Parameters.FirstOrDefault(y => y.id == x));
+            });
 
             //add params
             foreach (var param in parameters)

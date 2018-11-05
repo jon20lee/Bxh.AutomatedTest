@@ -71,6 +71,16 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
             StringAssert.Contains("SUCCESS", result);
         }
 
+
+        [Test]
+        public void PostBulkShipStatusSendstoAddress()
+        {
+            var result = _apigeeTests.BulkShipStatus("ToAddressEmailing");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
         [Test]
         public void PostBlendingsReturnsOk()
         {
