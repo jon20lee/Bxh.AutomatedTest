@@ -66,6 +66,7 @@
     <Compile Include="Api\Models\TestApplication.cs" />
     <Compile Include="Api\Models\TestResult.cs" />
     <Compile Include="Api\Models\TestTarget.cs" />
+    <Compile Include="Api\Models\TestTargetApiKey.cs" />
     <Compile Include="Api\Models\TestTargetCredentials.cs" />
     <Compile Include="Api\Models\TestTargetHeaders.cs" />
     <Compile Include="Api\Models\TestTargetParameters.cs" />

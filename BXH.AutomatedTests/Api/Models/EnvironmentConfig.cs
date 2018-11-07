@@ -8,5 +8,6 @@ namespace BXH.AutomatedTests.Api.Models
         public string HostURL { get; set; }
         public List<ProductApp> ProductApps { get; set; }
         public TestTargetCredentials credentials { get; set; }
+        public TestTargetApiKey ApiKey { get; set; }
     }
 }
