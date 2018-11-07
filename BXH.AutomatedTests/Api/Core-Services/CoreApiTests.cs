@@ -39,9 +39,10 @@ namespace BXH.AutomatedTests.Api
         {
 
             TestTarget testTarget = (TestTarget)_testApplication.Targets.FirstOrDefault(x => x.Name == testName);
+            TestTargetApiKey envApiKey = (TestTargetApiKey)_testApplication.Environments[0].ApiKey;
             TestTargetTestCases tc = testTarget?.TestCases.FirstOrDefault(x => x.name == testCase);
 
-            var res = _testHelper.RunTest(testTarget, _testApplication.Client, testCase, useInvalidApiKey ? "" : testTarget.Headers.FirstOrDefault(x => x.key == "x-api-key").value, "");
+            var res = _testHelper.RunTest(testTarget, _testApplication.Client, testCase, useInvalidApiKey ? "" : envApiKey.value, "");
 
             if (res?.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()))
             {
