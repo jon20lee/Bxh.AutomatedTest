@@ -40,6 +40,7 @@ namespace BXH.AutomatedTests.Api.Inner
 
         public string InnerToken(string clientId, string clientSecret)
         {
+            ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
             var request = new RestRequest("/token", Method.POST);
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
 

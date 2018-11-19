@@ -49,7 +49,7 @@ namespace BXH.AutomatedTests
                     _apigeeTests.useInvalidApiKey = false;
                 }
             }
-
+            //*
             BxhApiTests _bxhTests = new BxhApiTests(TestHelpers);
             var bxhTestApp = _bxhTests.testApplication;
 
@@ -67,7 +67,7 @@ namespace BXH.AutomatedTests
                     _bxhTests.useInvalidApiKey = false;
                 }
             }
-
+            //*/
             CoreApiTests _coreTests = new CoreApiTests(TestHelpers);
             var coreTestApp = _coreTests._testApplication;
 

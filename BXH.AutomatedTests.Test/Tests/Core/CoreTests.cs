@@ -28,6 +28,15 @@ namespace BXH.AutomatedTests.Test.Tests.Core
         }
 
         [Test]
+        public void PostBulkShipStatusSendToAddress()
+        {
+            var result = _coreTests.BulkShipStatus("ToAddressEmailing");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
         public void PostBlendingReturnsOk()
         {
             var result = _coreTests.PostBlending("HappyPath");

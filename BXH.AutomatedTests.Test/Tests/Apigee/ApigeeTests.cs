@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Net.Mime;
 using BXH.AutomatedTests.Api;
 using BXH.AutomatedTests.Api.Apigee;
@@ -16,6 +17,7 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
         [Test]
         public void PostAdvancedShipReturnsOk()
         {
+            Thread.Sleep(250);
             var result = _apigeeTests.ShipNotices("HappyPath");
 
             Assert.That(result, Is.Not.Null);
@@ -26,6 +28,23 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
         public void PostAdvancedShipReturnsInternalServerErrorWithInvalidXml()
         {
             var result = _apigeeTests.ShipNotices("InvalidXML");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+        [Test]
+        public void PostAdvancedShipReturnsInternalServerErrorWithXMLThreat()
+        {
+            var result = _apigeeTests.ShipNotices("XMLThreat");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void PostAdvancedShipOnRequriedParam()
+        {   //Validates Required Parameter is missinging
+            var result = _apigeeTests.ShipNotices("ValidateTypeParameter");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -66,6 +85,15 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
         public void PostBulkShipStatusReturnsInternalServerErrorWithInvalidXml()
         {
             var result = _apigeeTests.BulkShipStatus("InvalidXML");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void PostBulkShipStatusReturnsInternalServerErrorWithXMLThreat()
+        {
+            var result = _apigeeTests.BulkShipStatus("XMLThreat");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);

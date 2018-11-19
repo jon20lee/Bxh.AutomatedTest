@@ -31,9 +31,36 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
         }
 
         [Test]
+        public void PostAdvancedShipReturns500InvalidVendor()
+        {
+            var result = _bxhTests.ShipNotices("InvalidVendorNumber");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void PostAdvancedShipReturnsInvalidXml()
+        {
+            var result = _bxhTests.ShipNotices("InvalidXML");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
         public void PostBulkShipReturnsOk()
         {
             var result = _bxhTests.BulkShipStatus("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void PostBulkShipStatusSendstoAddress()
+        {
+            var result = _bxhTests.BulkShipStatus("ToAddressEmailing");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -44,6 +71,15 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
         {
             var result = _bxhTests.PostBlending("HappyPath");
 
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+        [Test]
+        //Currently NoOp, lower level is not validating JSON
+        public void PostBlendingReturnsInvalidJson()
+        {
+            var result = _bxhTests.PostBlending("InvalidJson");
+         
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
         }

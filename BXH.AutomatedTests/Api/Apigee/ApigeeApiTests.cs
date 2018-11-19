@@ -26,7 +26,7 @@ namespace BXH.AutomatedTests.Api.Apigee
 
         public string ApigeeToken(string clientId, string clientSecret)
         {
-            var request = new RestRequest("/oauth/client_credential/accesstoken", Method.POST);
+            var request = new RestRequest("/token", Method.POST);
             request.AddQueryParameter("grant_type", "client_credentials");
             request.AddParameter(
                 "application/x-www-form-urlencoded",

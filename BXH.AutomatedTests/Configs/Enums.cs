@@ -6,7 +6,8 @@
         {
             Localhost,
             Dev,
-            Test
+            Test,
+            Stage
         }
     }
 }

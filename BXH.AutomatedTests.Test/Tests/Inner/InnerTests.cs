@@ -27,6 +27,15 @@ namespace BXH.AutomatedTests.Test.Tests.Inner
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
         }
+        [Test]
+
+        public void PostBulkShipStatusSendToAddress()
+        {
+            var result = _innerTests.BulkShipStatus("ToAddressEmailing");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
 
         [Test]
         public void PostBlendingReturnsOk()
