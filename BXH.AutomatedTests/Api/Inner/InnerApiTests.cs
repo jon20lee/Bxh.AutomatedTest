@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using BXH.AutomatedTests.Api.Apigee;
 using BXH.AutomatedTests.Api.Inner.Models;
@@ -10,28 +11,30 @@ namespace BXH.AutomatedTests.Api.Inner
 {
     public class InnerApiTests
     {
-        private TestHelper testHelper;
+        private readonly TestHelper _testHelper;
         private Logger _logger;
+        public readonly TestApplication _testApplication;
 
         public InnerApiTests(TestHelper conf)
         {
-            testHelper = conf;
+            _testHelper = conf;
             _logger = conf.Logger;
+            _testApplication = _testHelper.GetTestApplication("INNER");
         }
 
-        public string ShipNotices()
+        public string ShipNotices(string testCase)
         {
-            return ExecuteInnerTest("AdvancedShipNotice");
+            return ExecuteInnerTest("AdvancedShipNotice", testCase);
         }
 
-        public string BulkShipStatus()
+        public string BulkShipStatus(string testCase)
         {
-            return ExecuteInnerTest("BulkShipStatus");
+            return ExecuteInnerTest("BulkShipStatus", testCase);
         }
 
-        public string PostBlending()
+        public string PostBlending(string testCase)
         {
-            return ExecuteInnerTest("Blendings");
+            return ExecuteInnerTest("Blendings", testCase);
         }
 
 
@@ -45,7 +48,7 @@ namespace BXH.AutomatedTests.Api.Inner
             request.AddParameter("grant_type", "password", ParameterType.GetOrPost);
             request.AddParameter("password", clientSecret, ParameterType.GetOrPost);
 
-            var tokenResponse = testHelper.Client.Execute<InnerTokenResponse>(request);
+            var tokenResponse = _testApplication.Client.Execute<InnerTokenResponse>(request);
 
             if (tokenResponse.StatusCode == HttpStatusCode.OK)
             {
@@ -55,16 +58,16 @@ namespace BXH.AutomatedTests.Api.Inner
             return "";
         }
 
-        public string ExecuteInnerTest(string testName)
+        public string ExecuteInnerTest(string testName, string testCase)
         {
 
-            TestTarget testsToRun = (TestTarget)testHelper.TestTargets.FirstOrDefault(x => x.Name == testName);
-            TestTargetCredentials innerCreds = (TestTargetCredentials)testHelper.configs.credentials;
+            TestTarget testTarget = (TestTarget)_testApplication.Targets.FirstOrDefault(x => x.Name == testName);
+            TestTargetCredentials innerCreds = (TestTargetCredentials)_testApplication.Environments[0].credentials;
+            TestTargetTestCases tc = testTarget?.TestCases.FirstOrDefault(x => x.name == testCase);
 
+            var res = _testHelper.RunTest(testTarget, _testApplication.Client, testCase, InnerToken(innerCreds.username, innerCreds.password), "");
 
-            var res = testHelper.RunTest(testsToRun, InnerToken(innerCreds.username, innerCreds.password), "");
-
-            if (res?.Response.StatusCode == HttpStatusCode.OK)
+            if (res?.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()))
             {
                 return $"SUCCESS: Status: {res?.Response.StatusCode}";
             }

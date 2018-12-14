@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Net.Mime;
 using BXH.AutomatedTests.Api;
 using BXH.AutomatedTests.Api.Apigee;
@@ -10,13 +11,62 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
     [TestFixture]
     public class ApigeeTests
     {
-        private static readonly TestHelper TestConfigs = new TestHelper("Apigee");
+        private static readonly TestHelper TestConfigs = new TestHelper();
         private readonly ApigeeApiTests _apigeeTests = new ApigeeApiTests(TestConfigs);
 
         [Test]
         public void PostAdvancedShipReturnsOk()
         {
-            var result = _apigeeTests.ShipNotices();
+            Thread.Sleep(250);
+            var result = _apigeeTests.ShipNotices("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void PostAdvancedShipReturnsInternalServerErrorWithInvalidXml()
+        {
+            var result = _apigeeTests.ShipNotices("InvalidXML");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+        [Test]
+        public void PostAdvancedShipReturnsInternalServerErrorWithXMLThreat()
+        {
+            var result = _apigeeTests.ShipNotices("XMLThreat");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void PostAdvancedShipOnRequriedParam()
+        {   //Validates Required Parameter is missinging
+            var result = _apigeeTests.ShipNotices("ValidateTypeParameter");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void PostReturnsUnauthorizedWithInvalidToken()
+        {
+            _apigeeTests.useInvalidToken = true;
+            var result = _apigeeTests.ShipNotices("InvalidToken");
+            _apigeeTests.useInvalidToken = false;
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void PostReturnsUnauthorizedWithInvalidApiKey()
+        {
+            _apigeeTests.useInvalidApiKey = true;
+            var result = _apigeeTests.ShipNotices("InvalidApiKey");
+            _apigeeTests.useInvalidApiKey = false;
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -25,7 +75,35 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
         [Test]
         public void PostBulkShipStatusReturnsOk()
         {
-            var result = _apigeeTests.BulkShipStatus();
+            var result = _apigeeTests.BulkShipStatus("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void PostBulkShipStatusReturnsInternalServerErrorWithInvalidXml()
+        {
+            var result = _apigeeTests.BulkShipStatus("InvalidXML");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void PostBulkShipStatusReturnsInternalServerErrorWithXMLThreat()
+        {
+            var result = _apigeeTests.BulkShipStatus("XMLThreat");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+
+        [Test]
+        public void PostBulkShipStatusSendstoAddress()
+        {
+            var result = _apigeeTests.BulkShipStatus("ToAddressEmailing");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -34,7 +112,7 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
         [Test]
         public void PostBlendingsReturnsOk()
         {
-            var result = _apigeeTests.PostBlendings();
+            var result = _apigeeTests.PostBlendings("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);

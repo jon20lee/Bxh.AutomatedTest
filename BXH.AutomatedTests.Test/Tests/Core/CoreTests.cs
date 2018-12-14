@@ -6,13 +6,13 @@ namespace BXH.AutomatedTests.Test.Tests.Core
     [TestFixture]
     public class CoreTests
     {
-        private static readonly TestHelper TestConfigs = new TestHelper("CORE");
+        private static readonly TestHelper TestConfigs = new TestHelper();
         private readonly CoreApiTests _coreTests = new CoreApiTests(TestConfigs);
 
         [Test]
         public void PostAdvancedShipReturnsOk()
         {
-            var result = _coreTests.ShipNotices();
+            var result = _coreTests.ShipNotices("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -21,7 +21,16 @@ namespace BXH.AutomatedTests.Test.Tests.Core
         [Test]
         public void PostBulkShipReturnsOk()
         {
-            var result = _coreTests.BulkShipStatus();
+            var result = _coreTests.BulkShipStatus("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void PostBulkShipStatusSendToAddress()
+        {
+            var result = _coreTests.BulkShipStatus("ToAddressEmailing");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -30,7 +39,7 @@ namespace BXH.AutomatedTests.Test.Tests.Core
         [Test]
         public void PostBlendingReturnsOk()
         {
-            var result = _coreTests.PostBlending();
+            var result = _coreTests.PostBlending("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);

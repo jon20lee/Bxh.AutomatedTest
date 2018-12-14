@@ -11,57 +11,46 @@ using Serilog.Core;
 
 namespace BXH.AutomatedTests.Api
 {
-    public class TestHelper
+    public class TestHelper 
     {
-        public EnvironmentConfig configs;
+        public List<TestApplication> testApps;
         public List<TestTarget> TestTargets;
+        public List<TestResult> TestResults;
         public Logger Logger;
         public RestClient Client;
-        public List<TestResult> TestResults;
         public string AppName;
+        public string EnvironemntToTest;
 
-        public TestHelper(string appName)
+        public TestHelper()
         {
             // Create Logger
             Logger = new LoggerConfiguration()
                 .WriteTo.Console()
                 .CreateLogger();
 
-            Logger.Information($"--------------------- {appName} ------------------------");
             TestResults = new List<TestResult>();
-            AppName = appName;
 
             //read in config settings
             string configFile = File.ReadAllText(Path.Combine("C:\\BXH", "AutomatedTestConfig.json"));
-            dynamic envToTest = JObject.Parse(configFile).SelectToken($"EnvironmentToTest");
+            EnvironemntToTest = (string) JObject.Parse(configFile).SelectToken($"EnvironmentToTest");
 
             //grab the configs and targets to be run
-            configs = JObject.Parse(configFile).SelectToken($"Apps.{appName}.Environments[0].{envToTest.Value}").ToObject<EnvironmentConfig>();
-            TestTargets = JObject.Parse(configFile).SelectToken($"Apps.{appName}.Targets").ToObject<List<TestTarget>>();
-
-            Client = new RestClient(configs.HostURL);
+            testApps = JObject.Parse(configFile).SelectToken("Apps").ToObject<List<TestApplication>>();
         }
 
-        public TestResult RunTest(TestTarget test, string token, string clientID)
+        public TestApplication GetTestApplication(string appName)
         {
+            var app = new TestApplication();
 
-            TestResult testResult = new TestResult();
+            Logger.Information($"~~~~~~~~~~~~~~~~~~~~  {appName}  ~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-            var request = GetTargetRestRequest(test, token, clientID);
-            var res = Client.Execute(request);
-            testResult.Response = res;
-            testResult.TestName = test.Name;
-
-            Logger.Information($"------------------------------------------------------");
-            Logger.Information($"Test Name: {testResult.TestName} ");
-            Logger.Information($"Test status code: {testResult.Response.StatusCode} ");
-            var finalTestResult = testResult.Response.StatusCode == HttpStatusCode.OK ? "PASSED" : "FAILED";
-            Logger.Information($"Test Result: {finalTestResult}");
-        
-            return testResult;
+            app.Targets = testApps.FirstOrDefault(x => x.Name == appName)?.Targets;
+            app.Environments = new List<EnvironmentConfig>(testApps?.FirstOrDefault(x => x.Name == appName)?.Environments?.Where(x => x.Name == EnvironemntToTest));
+            app.Client = new RestClient(app.Environments[0].HostURL);
+            return app;
         }
 
-        public RestRequest GetTargetRestRequest(TestTarget test, string token, string clientId)
+        public RestRequest GetTargetRestRequest(TestTarget test, TestTargetTestCases testCase, string token, string clientId)
         {
 
             //setup request
@@ -80,21 +69,58 @@ namespace BXH.AutomatedTests.Api
                 }
                 else if (header.key == "x-api-key")
                 {
-                    request.AddHeader(header.key, header.value);
+                    request.AddHeader(header.key, token);
                 }
                 else
                 {
                     request.AddHeader(header.key, header.value);
                 }
             }
+            List<TestTargetParameters> parameters = new List<TestTargetParameters>();
+            testCase.paramId.ForEach(x =>
+            {
+                parameters.Add(test.Parameters.FirstOrDefault(y => y.id == x));
+            });
 
             //add params
-            foreach (var param in test.Parameters)
+            foreach (var param in parameters)
             {
                 request.AddParameter(param.key, param.value, (ParameterType)Enum.Parse(typeof(ParameterType), param.type));
             }
 
             return request;
         }
+
+        public TestResult RunTest(TestTarget test, RestClient client, string testCase, string token, string clientID)
+        {
+            ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+            TestTargetTestCases tc = test.TestCases.FirstOrDefault(x => x.name == testCase);
+            TestResult testResult = new TestResult();
+
+            var request = GetTargetRestRequest(test, tc, token, clientID);
+            var res = client.Execute(request);
+            testResult.Response = res;
+            testResult.TestName = test.Name;
+            testResult.Status = testResult.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()) ? "PASSED" : "FAILED";
+
+            TestResults.Add(testResult);
+
+            Logger.Information($"------------------------------------------------------");
+            Logger.Information($"Test Name: {testResult.TestName} ");
+            Logger.Information($"Test Case: {tc.name} ");
+            Logger.Information($"Test status code: {testResult.Response.StatusCode} ");
+            if (testResult.Status == "PASSED")
+            {
+                Logger.Information($"Test Result: {testResult.Status}");
+            }
+            else
+            {
+                Logger.Error($"Test Result: {testResult.Status}");
+            }
+            
+        
+            return testResult;
+        }
+
     }
 }

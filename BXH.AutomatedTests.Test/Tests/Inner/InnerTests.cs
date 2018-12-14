@@ -7,13 +7,13 @@ namespace BXH.AutomatedTests.Test.Tests.Inner
     [TestFixture]
     public class InnerTests
     {
-        private static readonly TestHelper TestConfigs = new TestHelper("INNER");
+        private static readonly TestHelper TestConfigs = new TestHelper();
         private readonly InnerApiTests _innerTests = new InnerApiTests(TestConfigs);
 
         [Test]
         public void PostAdvancedShipReturnsOk()
         {
-            var result = _innerTests.ShipNotices();
+            var result = _innerTests.ShipNotices("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -22,7 +22,16 @@ namespace BXH.AutomatedTests.Test.Tests.Inner
         [Test]
         public void PostBulkShipReturnsOk()
         {
-            var result = _innerTests.BulkShipStatus();
+            var result = _innerTests.BulkShipStatus("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+        [Test]
+
+        public void PostBulkShipStatusSendToAddress()
+        {
+            var result = _innerTests.BulkShipStatus("ToAddressEmailing");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -31,7 +40,7 @@ namespace BXH.AutomatedTests.Test.Tests.Inner
         [Test]
         public void PostBlendingReturnsOk()
         {
-            var result = _innerTests.PostBlending();
+            var result = _innerTests.PostBlending("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
