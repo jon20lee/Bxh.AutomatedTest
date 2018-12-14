@@ -51,6 +51,24 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
         }
 
         [Test]
+        public void PostAdvancedValidateMissTypedTypeParam()
+        {   //Validates Required Parameter is missinging
+            var result = _apigeeTests.ShipNotices("MissTypedTypeParameter");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void PostAdvancedValidateUnexpectedTypeParam()
+        {   //Validates Required Parameter is missinging
+            var result = _apigeeTests.ShipNotices("UNETypeParameter");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
         public void PostReturnsUnauthorizedWithInvalidToken()
         {
             _apigeeTests.useInvalidToken = true;
@@ -113,6 +131,16 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
         public void PostBlendingsReturnsOk()
         {
             var result = _apigeeTests.PostBlendings("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        //Currently NoOp, waiting for completion from developmet-12-10-2018
+        public void GetInventory()
+        {
+            var result = _apigeeTests.GetInventory("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);

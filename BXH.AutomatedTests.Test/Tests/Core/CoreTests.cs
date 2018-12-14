@@ -45,6 +45,15 @@ namespace BXH.AutomatedTests.Test.Tests.Core
             StringAssert.Contains("SUCCESS", result);
         }
 
+        [Test]
+        //Currently NoOp, waiting for completion from developmet-12-10-2018
+        public void GetInventory()
+        {
+            var result = _coreTests.GetInventory("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
 
     }
 }

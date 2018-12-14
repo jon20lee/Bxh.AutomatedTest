@@ -74,6 +74,7 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
         }
+
         [Test]
         //Currently NoOp, lower level is not validating JSON
         public void PostBlendingReturnsInvalidJson()
@@ -83,5 +84,16 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
         }
+
+        [Test]
+        //Currently NoOp, waiting for completion from developmet-12-10-2018
+        public void GetInventory()
+        {
+            var result = _bxhTests.GetInventory("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
     }
 }

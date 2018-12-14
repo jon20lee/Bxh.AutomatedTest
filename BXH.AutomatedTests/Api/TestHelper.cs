@@ -77,20 +77,24 @@ namespace BXH.AutomatedTests.Api
                 }
             }
             List<TestTargetParameters> parameters = new List<TestTargetParameters>();
-            testCase.paramId.ForEach(x =>
+            testCase.paramId?.ForEach(x =>
             {
-                parameters.Add(test.Parameters.FirstOrDefault(y => y.id == x));
+                var param = test.Parameters?.Where(y => y.id == x).FirstOrDefault();
+                if(param != null)
+                {
+                    parameters.Add(test.Parameters?.Where(y => y.id == x).FirstOrDefault());
+                }
             });
 
             //add params
             foreach (var param in parameters)
             {
-                request.AddParameter(param.key, param.value, (ParameterType)Enum.Parse(typeof(ParameterType), param.type));
+                    request.AddParameter(param.key, param.value, (ParameterType)Enum.Parse(typeof(ParameterType), param.type));
             }
 
             return request;
-        }
 
+        }
         public TestResult RunTest(TestTarget test, RestClient client, string testCase, string token, string clientID)
         {
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
@@ -117,8 +121,8 @@ namespace BXH.AutomatedTests.Api
             {
                 Logger.Error($"Test Result: {testResult.Status}");
             }
-            
-        
+
+
             return testResult;
         }
 

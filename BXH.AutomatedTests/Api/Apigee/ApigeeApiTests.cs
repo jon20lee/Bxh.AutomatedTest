@@ -58,6 +58,12 @@ namespace BXH.AutomatedTests.Api.Apigee
             return ExecuteApigeeTest("Blendings", testCase);
         }
 
+        public string GetInventory(string testCase)
+        {
+            return ExecuteApigeeTest("Inventory", testCase);
+        }
+
+
         public string ExecuteApigeeTest(string testName, string testCase)
         {
             TestTarget testTarget = (TestTarget)testApplication.Targets.FirstOrDefault(x => x.Name == testName);

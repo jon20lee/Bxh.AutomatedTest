@@ -46,7 +46,14 @@ namespace BXH.AutomatedTests.Test.Tests.Inner
             StringAssert.Contains("SUCCESS", result);
         }
 
+        [Test]
+        public void GetInventory()
+        {
+            var result = _innerTests.GetInventory("HappyPath");
 
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
     }
 
 }
