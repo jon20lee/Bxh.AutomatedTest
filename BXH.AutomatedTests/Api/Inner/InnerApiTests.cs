@@ -7,7 +7,7 @@ using BXH.AutomatedTests.Api.Models;
 using RestSharp;
 using Serilog.Core;
 
-namespace BXH.AutomatedTests.Api.Inner
+namespace BXH.AutomatedTests.Api.Inner    
 {
     public class InnerApiTests
     {
@@ -37,7 +37,7 @@ namespace BXH.AutomatedTests.Api.Inner
             return ExecuteInnerTest("Blendings", testCase);
         }
 
-        public string GetInventory(string testCase)
+        public string GetInventory(string testCase) 
         {
             return ExecuteInnerTest("Inventory", testCase);
         }
