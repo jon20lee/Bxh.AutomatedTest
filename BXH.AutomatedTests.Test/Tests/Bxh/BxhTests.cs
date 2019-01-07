@@ -24,10 +24,23 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
         [Test]
         public void PostAdvancedShipReturnsOk()
         {
-            var result = _bxhTests.ShipNotices("HappyPath");
+            int? _itr = _bxhTests.testApplication.Targets[0].TestCases[0].iterations;
+            if (_itr <= 0)
+            {
+                _itr = 1;
+            }
+            else
+            {
+                for (int i = 0; i < _itr; i++)
+                {
+                    var result = _bxhTests.ShipNotices("HappyPath");
 
-            Assert.That(result, Is.Not.Null);
-            StringAssert.Contains("SUCCESS", result);
+                    Assert.That(result, Is.Not.Null);
+                    StringAssert.Contains("SUCCESS", result);
+
+                    System.Threading.Thread.Sleep(5000);
+                }
+            }
         }
 
         [Test]
@@ -48,7 +61,21 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
             StringAssert.Contains("SUCCESS", result);
         }
 
+        //VerifySeedPayload
         [Test]
+        public void PostAdvancedShipSeedPayloadOk()
+        {
+            var result = _bxhTests.ShipNotices("VerifySeedPayload");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        // Currently passes with a chemical payload, but need a PL with seed
+        // Passes: Test Case 6, using payload 1 (chemical), type parameter 7
+        // Fails:  Test Case 6, using payload 4 (seed), type parameter 7
+        // Need Seed payload
         public void PostBulkShipReturnsOk()
         {
             var result = _bxhTests.BulkShipStatus("HappyPath");
@@ -58,18 +85,18 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
         }
 
         [Test]
-        public void PostBulkShipStatusSendstoAddress()
+        public void PostBlendingReturnsOk()
         {
-            var result = _bxhTests.BulkShipStatus("ToAddressEmailing");
+            var result = _bxhTests.PostBlending("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
         }
 
         [Test]
-        public void PostBlendingReturnsOk()
+        public void PostBulkShipStatusSendstoAddress()
         {
-            var result = _bxhTests.PostBlending("HappyPath");
+            var result = _bxhTests.BulkShipStatus("ToAddressEmailing");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -86,10 +113,30 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
         }
 
         [Test]
-        //Currently NoOp, waiting for completion from developmet-12-10-2018
         public void GetInventory()
         {
             var result = _bxhTests.GetInventory("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        //Date for inventory 
+        [Test]
+        public void GetInventoryWithDate()
+        {
+            var result = _bxhTests.GetInventory("DateParameter");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+            System.Threading.Thread.Sleep(5000);
+        }
+
+        //Get Delivery Confirmations ... Currently Stubbed
+        [Test]
+        public void GetDelieveryConfirmations()
+        {
+            var result = _bxhTests.GetDeliveryConfirmations("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);

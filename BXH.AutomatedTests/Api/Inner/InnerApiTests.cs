@@ -7,7 +7,7 @@ using BXH.AutomatedTests.Api.Models;
 using RestSharp;
 using Serilog.Core;
 
-namespace BXH.AutomatedTests.Api.Inner    
+namespace BXH.AutomatedTests.Api.Inner
 {
     public class InnerApiTests
     {
@@ -40,6 +40,11 @@ namespace BXH.AutomatedTests.Api.Inner
         public string GetInventory(string testCase) 
         {
             return ExecuteInnerTest("Inventory", testCase);
+        }
+
+        public string GetDeliveryConfirmations(string testCase)
+        {
+            return ExecuteInnerTest("DeliveryConfirmations", testCase);
         }
 
         public string InnerToken(string clientId, string clientSecret)

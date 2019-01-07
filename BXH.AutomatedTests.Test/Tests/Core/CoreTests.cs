@@ -46,10 +46,28 @@ namespace BXH.AutomatedTests.Test.Tests.Core
         }
 
         [Test]
-        //Currently NoOp, waiting for completion from developmet-12-10-2018
         public void GetInventory()
         {
             var result = _coreTests.GetInventory("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void GetInventoryWithDate()
+        {
+            var result = _coreTests.GetInventory("DateParameter");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        //Get Delivery Confirmations ... Currently Stubbed
+        [Test]
+        public void GetDelieveryConfirmations()
+        {
+            var result = _coreTests.GetDeliveryConfirmations("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);

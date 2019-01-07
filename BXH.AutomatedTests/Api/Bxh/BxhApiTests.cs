@@ -15,6 +15,7 @@ namespace BXH.AutomatedTests.Api.Bxh
         public Logger _logger;
         public TestApplication testApplication;
         public bool useInvalidApiKey;
+        public bool useInvalidToken = false;
 
         public BxhApiTests(TestHelper conf)
         {
@@ -41,6 +42,11 @@ namespace BXH.AutomatedTests.Api.Bxh
         public string GetInventory(string testCase)
         {
             return ExecuteBxhTest("Inventory", testCase);
+        }
+
+        public string GetDeliveryConfirmations(string testCase)
+        {
+            return ExecuteBxhTest("DeliveryConfirmations", testCase);
         }
 
         public string ExecuteBxhTest(string testName, string testCase)
