@@ -16,6 +16,7 @@ namespace BXH.AutomatedTests.Api.Apigee
         private Logger _logger;
         public bool useInvalidToken = false;
         public bool useInvalidApiKey = false;
+        public string currentFileURL;
 
         public ApigeeApiTests(TestHelper conf)
         {
@@ -58,20 +59,30 @@ namespace BXH.AutomatedTests.Api.Apigee
             return ExecuteApigeeTest("Blendings", testCase);
         }
 
+        public string GetInventory(string testCase)
+        {
+            return ExecuteApigeeTest("Inventory", testCase);
+        }
+
+        public string GetDeliveryConfirmations(string testCase)
+        {
+            return ExecuteApigeeTest("DeliveryConfirmations", testCase);
+        }
+
         public string ExecuteApigeeTest(string testName, string testCase)
         {
             TestTarget testTarget = (TestTarget)testApplication.Targets.FirstOrDefault(x => x.Name == testName);
             ProductApp apigeeApp = (ProductApp)testApplication.Environments[0].ProductApps.FirstOrDefault(x => x.ID == testTarget?.ProductAppID);
             TestTargetTestCases tc = testTarget?.TestCases.FirstOrDefault(x => x.name == testCase);
 
-            var res = testHelper.RunTest(testTarget, testApplication.Client, testCase, useInvalidToken ? "" : ApigeeToken(apigeeApp?.ClientID, apigeeApp?.ClientSecret), useInvalidApiKey ? "" : apigeeApp?.ClientID);
+                var res = testHelper.RunTest(testTarget, testApplication.Client, testCase, useInvalidToken ? "" : ApigeeToken(apigeeApp?.ClientID, apigeeApp?.ClientSecret), useInvalidApiKey ? "" : apigeeApp?.ClientID);
 
-            if (res?.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()))
-            {
-                return $"SUCCESS: Status: {res?.Response.StatusCode}";
-            }
+                if (res?.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()))
+                {
+                    return $"SUCCESS: Status: {res?.Response.StatusCode}";
+                }
 
-            return $"FAILURE: {res?.Response.StatusCode} : {res?.Response.ErrorMessage}";
+            return $"FAILURE: {res?.Response.StatusCode} : {res?.Response.ErrorMessage}";           
         }
     }
 }

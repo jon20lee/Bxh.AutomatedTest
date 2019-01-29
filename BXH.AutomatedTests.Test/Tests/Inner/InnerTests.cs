@@ -46,7 +46,33 @@ namespace BXH.AutomatedTests.Test.Tests.Inner
             StringAssert.Contains("SUCCESS", result);
         }
 
+        [Test]
+        public void GetInventory()
+        {
+            var result = _innerTests.GetInventory("HappyPath");
 
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void GetInventoryWithDate()
+        {
+            var result = _innerTests.GetInventory("DateParameter");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        //Get Delivery Confirmations ... Currently Stubbed
+        [Test]
+        public void GetDelieveryConfirmations()
+        {
+            var result = _innerTests.GetDeliveryConfirmations("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
     }
 
 }

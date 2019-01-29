@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Web;
 using BXH.AutomatedTests.Api.Models;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -77,30 +79,56 @@ namespace BXH.AutomatedTests.Api
                 }
             }
             List<TestTargetParameters> parameters = new List<TestTargetParameters>();
-            testCase.paramId.ForEach(x =>
+            testCase.paramId?.ForEach(x =>
             {
-                parameters.Add(test.Parameters.FirstOrDefault(y => y.id == x));
+                var param = test.Parameters?.Where(y => y.id == x).FirstOrDefault();
+                if(param != null)
+                {
+                    parameters.Add(test.Parameters?.Where(y => y.id == x).FirstOrDefault());
+                }
             });
 
-            //add params
-            foreach (var param in parameters)
+            //12-17-2018 converting T/t is a temp work-around
+            if (EnvironemntToTest == "Dev" || EnvironemntToTest == "Test")
             {
-                request.AddParameter(param.key, param.value, (ParameterType)Enum.Parse(typeof(ParameterType), param.type));
+                //add params
+                foreach (var param in parameters)
+                {
+                    if (param.key.ToString() == "Type" && ( (param.value.ToString() == "chemical") || param.value.ToString() == "seed"))
+                    {
+                        String Key = param.key.ToLower();
+                        String Value = param.value.ToLower();
+                        request.AddParameter(Key, Value, (ParameterType)Enum.Parse(typeof(ParameterType), param.type));
+                    }
+                    else
+                    {
+                        request.AddParameter(param.key, param.value, (ParameterType)Enum.Parse(typeof(ParameterType), param.type));
+                    }
+                }
             }
-
+            else if (EnvironemntToTest == "Stage" || EnvironemntToTest == "Sandbox")
+            {
+                foreach (var param in parameters)
+                {
+                        request.AddParameter(param.key, param.value, (ParameterType) Enum.Parse(typeof(ParameterType), param.type));
+                }
+            }
             return request;
         }
-
         public TestResult RunTest(TestTarget test, RestClient client, string testCase, string token, string clientID)
         {
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
             TestTargetTestCases tc = test.TestCases.FirstOrDefault(x => x.name == testCase);
+
             TestResult testResult = new TestResult();
 
             var request = GetTargetRestRequest(test, tc, token, clientID);
+
             var res = client.Execute(request);
+
             testResult.Response = res;
             testResult.TestName = test.Name;
+
             testResult.Status = testResult.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()) ? "PASSED" : "FAILED";
 
             TestResults.Add(testResult);
@@ -112,15 +140,36 @@ namespace BXH.AutomatedTests.Api
             if (testResult.Status == "PASSED")
             {
                 Logger.Information($"Test Result: {testResult.Status}");
+                if(testCase == "ValidateURL")
+                {
+                    var url = JObject.Parse(res.Content);
+                    var urlString = url["data"].ToString();
+                    System.IO.File.WriteAllText(@"C:\BXH\InventoryURL.txt", res.Content);
+
+                    var request2 = new RestRequest(urlString, Method.GET);
+                    var res2 = client.Execute(request2);
+
+                    testResult.Response = res2;
+                    testResult.TestName = test.Name;
+                    testResult.Status = testResult.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()) ? "PASSED" : "FAILED";
+
+                    TestResults.Add(testResult);
+
+                    if (testResult.Status == "PASSED")
+                    {
+                        return testResult;
+                    }
+                    else
+                    {
+                        Logger.Error($"Test Result: {testResult.Status}");
+                    }
+                }
             }
             else
             {
                 Logger.Error($"Test Result: {testResult.Status}");
             }
-            
-        
             return testResult;
         }
-
     }
 }

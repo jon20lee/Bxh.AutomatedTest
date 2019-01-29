@@ -35,6 +35,16 @@ namespace BXH.AutomatedTests.Api
             return ExecuteCoreTest("Blendings", testCase);
         }
 
+        public string GetInventory(string testCase)
+        {
+            return ExecuteCoreTest("Inventory", testCase);
+        }
+
+        public string GetDeliveryConfirmations(string testCase)
+        {
+            return ExecuteCoreTest("DeliveryConfirmations", testCase);
+        }
+
         public string ExecuteCoreTest(string testName, string testCase)
         {
 

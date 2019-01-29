@@ -37,6 +37,15 @@ namespace BXH.AutomatedTests.Api.Inner
             return ExecuteInnerTest("Blendings", testCase);
         }
 
+        public string GetInventory(string testCase) 
+        {
+            return ExecuteInnerTest("Inventory", testCase);
+        }
+
+        public string GetDeliveryConfirmations(string testCase)
+        {
+            return ExecuteInnerTest("DeliveryConfirmations", testCase);
+        }
 
         public string InnerToken(string clientId, string clientSecret)
         {
