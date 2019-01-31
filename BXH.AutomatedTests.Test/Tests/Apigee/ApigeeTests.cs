@@ -16,25 +16,49 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
         private static readonly TestHelper TestConfigs = new TestHelper();
         private readonly ApigeeApiTests _apigeeTests = new ApigeeApiTests(TestConfigs);
 
-        //SOM - Advance Ship Notice
         [Test]
-        public void PostAdvancedShipReturnsOk()
+        public void PostAdvancedShipReturnsSpike()
         {
-            int? _itr = _apigeeTests.testApplication.Targets[0].TestCases[0].iterations;
+            int _itr = _apigeeTests.testApplication.Targets[0].TestCases[11].iterations;
             if (_itr <= 0)
             {
                 _itr = 1;
             }
-            else
+
+            Thread[] threads = new Thread[_itr];
+            for (int i = 0; i < threads.Length; i++)
             {
-                for (int i = 0; i < _itr; i++)
+                threads[i] = new Thread(() =>
                 {
-                    var result = _apigeeTests.ShipNotices("HappyPath");
+                    var result = _apigeeTests.ShipNotices("Spike");
 
                     Assert.That(result, Is.Not.Null);
-                    StringAssert.Contains("SUCCESS", result);
-                }
+                    if (StringAssert.Equals("FAIL", result))
+                    {; ; } else {
+                        StringAssert.Contains("SUCCESS", result); }
+                });
             }
+            for (int i = 0; i < threads.Length;  i++)
+            {
+                threads[i].Start();
+                //Thread.Sleep(250);
+            }
+            for (int i = 0; i < threads.Length; i++)
+            {
+                threads[i].Join();
+                //Thread.Sleep(250);
+            }
+        }
+
+        //SOM - Advance Ship Notice
+        [Test]
+        public void PostAdvancedShipReturnsOk()
+        {
+            var result =_apigeeTests.ShipNotices("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+            
         }
 
         [Test]
@@ -175,6 +199,8 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
         }
 
         // SOM - Inventory (IAU)
+        // JMAL, set refress-cache = false (force each call to the backend)
+        // Loop is used to test cache, need to trace via APIgee, else set to 1
         [Test]
         public void GetInventory()
         {
@@ -228,25 +254,41 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
             System.Threading.Thread.Sleep(5000);
         }
 
-        [Test]
+        [Test] //Need to refactor, do to the changes in return code 01/15
         public void GetInventoryValidateURL()
         {
             var result = _apigeeTests.GetInventory("ValidateURL");
+
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
-
-            //var resultDownload = getURL.FromInvenotryURL();
-            //Assert.That(resultDownload, Is.Not.Null);
-            //Assert.Contains("SUCCESS", resultDownload);
-
-            System.Threading.Thread.Sleep(5000);
+             System.Threading.Thread.Sleep(5000);
         }
 
         //Delievery Confirmations (currently stub, set status 500)
         [Test]
-        public void GetDeliveryConfirmations()
+        public void PostDeliveryConfirmations()
         {
-            var result = _apigeeTests.GetDeliveryConfirmations("HappyPath");
+            var result = _apigeeTests.PostDeliveryConfirmations("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+            System.Threading.Thread.Sleep(5000);
+        }
+
+        [Test]
+        public void PostDeliveryConfirmationsInvalidGLN()
+        {
+            var result = _apigeeTests.PostDeliveryConfirmations("InvalidGLN");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+            System.Threading.Thread.Sleep(5000);
+        }
+
+        [Test]
+        public void PostDeliveryConfirmationsInvalidXML()
+        {
+            var result = _apigeeTests.PostDeliveryConfirmations("InvalidXML");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
@@ -258,6 +300,24 @@ namespace BXH.AutomatedTests.Test.Tests.Apigee
         public void PostBlendingsReturnsOk()
         {
             var result = _apigeeTests.PostBlendings("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        // Blending V2
+        [Test]
+        public void GetBlendingsV2ReturnsOk()
+        {
+            var result = _apigeeTests.GetBlendingsV2("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        public void GetBlendingsV2ReturnsError()
+        {
+            var result = _apigeeTests.GetBlendingsV2("InvalidHeader");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);

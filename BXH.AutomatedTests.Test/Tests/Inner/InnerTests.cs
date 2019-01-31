@@ -47,6 +47,24 @@ namespace BXH.AutomatedTests.Test.Tests.Inner
         }
 
         [Test]
+        public void GetBlendingV2ReturnsOk()
+        {
+            var result = _innerTests.GetBlendingV2("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+        
+        //[Test]
+        //public void GetBlendingV2ReturnsError()
+        //{
+        //    var result = _innerTests.GetBlendingV2("InvalidHeader");
+        //
+        //    Assert.That(result, Is.Not.Null);
+        //    StringAssert.Contains("SUCCESS", result);
+        //}
+
+        [Test]
         public void GetInventory()
         {
             var result = _innerTests.GetInventory("HappyPath");
@@ -66,9 +84,9 @@ namespace BXH.AutomatedTests.Test.Tests.Inner
 
         //Get Delivery Confirmations ... Currently Stubbed
         [Test]
-        public void GetDelieveryConfirmations()
+        public void PostDelieveryConfirmations()
         {
-            var result = _innerTests.GetDeliveryConfirmations("HappyPath");
+            var result = _innerTests.PostDeliveryConfirmations("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);

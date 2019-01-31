@@ -59,12 +59,17 @@ namespace BXH.AutomatedTests.Api.Apigee
             return ExecuteApigeeTest("Blendings", testCase);
         }
 
+        public string GetBlendingsV2(string testCase)
+        {
+            return ExecuteApigeeTest("BlendingsV2", testCase);
+        }
+
         public string GetInventory(string testCase)
         {
             return ExecuteApigeeTest("Inventory", testCase);
         }
 
-        public string GetDeliveryConfirmations(string testCase)
+        public string PostDeliveryConfirmations(string testCase)
         {
             return ExecuteApigeeTest("DeliveryConfirmations", testCase);
         }
