@@ -94,6 +94,25 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
         }
 
         [Test]
+        public void GetBlendingV2ReturnsOk()
+        {
+            var result = _bxhTests.GetBlendingV2("HappyPath");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+/*
+        [Test]
+        public void PostBlendingV2ReturnsError()
+        {
+            var result = _bxhTests.GetBlendingV2("InvalidHeader");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+*/
+        [Test]
         public void PostBulkShipStatusSendstoAddress()
         {
             var result = _bxhTests.BulkShipStatus("ToAddressEmailing");
@@ -132,15 +151,32 @@ namespace BXH.AutomatedTests.Test.Tests.Bxh
             System.Threading.Thread.Sleep(5000);
         }
 
-        //Get Delivery Confirmations ... Currently Stubbed
+        //Get Delivery Confirmations
         [Test]
-        public void GetDelieveryConfirmations()
+        public void PostDelieveryConfirmations()
         {
-            var result = _bxhTests.GetDeliveryConfirmations("HappyPath");
+            var result = _bxhTests.PostDeliveryConfirmations("HappyPath");
 
             Assert.That(result, Is.Not.Null);
             StringAssert.Contains("SUCCESS", result);
         }
 
+        [Test]
+        public void PostDeliveryConfirmationsInvalidGLN()
+        {
+            var result = _bxhTests.PostDeliveryConfirmations("InvalidGLN");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
+
+        [Test]
+        public void PostDeliveryConfirmationsInvalidXML()
+        {
+            var result = _bxhTests.PostDeliveryConfirmations("InvalidXML");
+
+            Assert.That(result, Is.Not.Null);
+            StringAssert.Contains("SUCCESS", result);
+        }
     }
 }

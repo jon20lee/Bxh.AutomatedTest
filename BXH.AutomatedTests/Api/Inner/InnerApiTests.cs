@@ -37,12 +37,17 @@ namespace BXH.AutomatedTests.Api.Inner
             return ExecuteInnerTest("Blendings", testCase);
         }
 
+        public string GetBlendingV2(string testCase)
+        {
+            return ExecuteInnerTest("BlendingsV2", testCase);
+        }
+
         public string GetInventory(string testCase) 
         {
             return ExecuteInnerTest("Inventory", testCase);
         }
 
-        public string GetDeliveryConfirmations(string testCase)
+        public string PostDeliveryConfirmations(string testCase)
         {
             return ExecuteInnerTest("DeliveryConfirmations", testCase);
         }

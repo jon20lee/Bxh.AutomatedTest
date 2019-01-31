@@ -39,12 +39,17 @@ namespace BXH.AutomatedTests.Api.Bxh
             return ExecuteBxhTest("Blendings", testCase);
         }
 
+        public string GetBlendingV2(string testCase)
+        {
+            return ExecuteBxhTest("BlendingsV2", testCase);
+        }
+
         public string GetInventory(string testCase)
         {
             return ExecuteBxhTest("Inventory", testCase);
         }
 
-        public string GetDeliveryConfirmations(string testCase)
+        public string PostDeliveryConfirmations(string testCase)
         {
             return ExecuteBxhTest("DeliveryConfirmations", testCase);
         }

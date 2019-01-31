@@ -27,7 +27,7 @@ namespace BXH.AutomatedTests
             sw.Start();
             ApigeeApiTests _apigeeTests = new ApigeeApiTests(TestHelpers);
             var testapp = _apigeeTests.testApplication;
-
+            
             foreach (var test in testapp.Targets)
             {
                 ProductApp apigeeApp = (ProductApp)testapp.Environments[0].ProductApps.FirstOrDefault(x => x.ID == test?.ProductAppID);
@@ -42,9 +42,14 @@ namespace BXH.AutomatedTests
                     {
                         _apigeeTests.useInvalidApiKey = true;
                     }
-                    
-                    TestHelpers.RunTest(test, testapp.Client, testCase.name, _apigeeTests.useInvalidToken ? "" : _apigeeTests.ApigeeToken(apigeeApp?.ClientID, apigeeApp?.ClientSecret), _apigeeTests.useInvalidApiKey ? "" : apigeeApp?.ClientID);
 
+                    //if (testCase.name == "HappyPath")
+                    //{
+                    //  Console.WriteLine("Test: Running " + testCase.name);
+
+                        TestHelpers.RunTest(test, testapp.Client, testCase.name, _apigeeTests.useInvalidToken ? "" : _apigeeTests.ApigeeToken(apigeeApp?.ClientID, apigeeApp?.ClientSecret), _apigeeTests.useInvalidApiKey ? "" : apigeeApp?.ClientID);
+                    
+                    //}
                     _apigeeTests.useInvalidToken = false;
                     _apigeeTests.useInvalidApiKey = false;
                 }

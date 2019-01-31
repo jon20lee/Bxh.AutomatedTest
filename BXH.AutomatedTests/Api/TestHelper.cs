@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using Serilog;
 using Serilog.Core;
+using System.Threading;
 
 namespace BXH.AutomatedTests.Api
 {
@@ -117,20 +118,27 @@ namespace BXH.AutomatedTests.Api
         }
         public TestResult RunTest(TestTarget test, RestClient client, string testCase, string token, string clientID)
         {
+
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
             TestTargetTestCases tc = test.TestCases.FirstOrDefault(x => x.name == testCase);
 
             TestResult testResult = new TestResult();
 
             var request = GetTargetRestRequest(test, tc, token, clientID);
-
+            
             var res = client.Execute(request);
 
+            //* ----------------------------------------------------- *//
+            var isError = res.Content.ToLower().Contains("iserror");
             testResult.Response = res;
             testResult.TestName = test.Name;
 
-            testResult.Status = testResult.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()) ? "PASSED" : "FAILED";
-
+            if (!isError)
+                testResult.Status = testResult.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()) ? "PASSED" : "FAILED";
+            else
+                testResult.Status = "PASSED";
+            //* ------------------------------------------------------ *//
+            
             TestResults.Add(testResult);
 
             Logger.Information($"------------------------------------------------------");
@@ -140,29 +148,77 @@ namespace BXH.AutomatedTests.Api
             if (testResult.Status == "PASSED")
             {
                 Logger.Information($"Test Result: {testResult.Status}");
-                if(testCase == "ValidateURL")
+                if (testCase == "ValidateURL")
                 {
-                    var url = JObject.Parse(res.Content);
-                    var urlString = url["data"].ToString();
+                    var urlList = new List<string>();
+                    var urlPassCount = 0;
+                    var urlFailCount = 0;
+
+                    var data = JObject.Parse(res.Content);
+                    var urls = JArray.Parse(data["data"].ToString());
                     System.IO.File.WriteAllText(@"C:\BXH\InventoryURL.txt", res.Content);
 
-                    var request2 = new RestRequest(urlString, Method.GET);
-                    var res2 = client.Execute(request2);
-
-                    testResult.Response = res2;
-                    testResult.TestName = test.Name;
-                    testResult.Status = testResult.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()) ? "PASSED" : "FAILED";
-
-                    TestResults.Add(testResult);
-
-                    if (testResult.Status == "PASSED")
+                    for (int i = 0; i < urls.Count; i++)
                     {
-                        return testResult;
+                        var urlString = urls[i].ToString();
+                        urlList.Add(urlString);
+
+                        var request2 = new RestRequest(urlString, Method.GET);
+                        var res2 = client.Execute(request2);
+
+                        testResult.Response = res2;
+                        testResult.TestName = test.Name;
+                        testResult.Status = testResult.Response.StatusCode == (HttpStatusCode)Enum.Parse(typeof(HttpStatusCode), tc.resultCode.ToString()) ? "PASSED" : "FAILED";
+
+                        TestResults.Add(testResult);
+
+                        if (testResult.Status == "PASSED")
+                        {
+                            //return testResult;
+                            urlPassCount++;
+                        }
+                        else
+                        {
+                            //Logger.Error($"Test Result: {testResult.Status}");
+                            urlFailCount++;
+                        }
+                        if (urlPassCount == urls.Count)
+                        {
+                            return testResult;
+                        }
+                        else if (urlFailCount > 0)
+                        {
+                            Logger.Error($"Test Result: {testResult.Status}");
+                        }
+                    }
+                }
+                else if (testResult.TestName == "BlendingsV2")
+                {
+                    var data = JObject.Parse(res.Content);
+                    var validMessage = (string)data["data"];   //Expected to contins the correct message;
+                    if (!string.IsNullOrEmpty(validMessage))
+                    {
+                        var statusCode = (string)data["statusCode"];//.errorMessage;
+                        if (validMessage.Contains("Invalid mixer id or branch Id provided") && (statusCode == "400"))
+                        {
+                            testResult.Status = "NotFound";
+                        //tc.resultCode = 0;
+                        }
+                        else if (validMessage.Contains("No blend message found for mixerId") && (statusCode == "404"))
+                        {
+                            testResult.Status = "NotFound";
+                            //tc.resultCode = 0;
+                        }
                     }
                     else
                     {
-                        Logger.Error($"Test Result: {testResult.Status}");
+                        validMessage = (string)data["errorMessage"];
+                        testResult.Status = "FAILED";
                     }
+                }
+                else
+                {
+                    Logger.Error($"Test Result: {testResult.Status}");
                 }
             }
             else
